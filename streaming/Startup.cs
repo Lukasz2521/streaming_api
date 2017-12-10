@@ -6,7 +6,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using streaming.DAL;
+using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
+using streaming.Config;
 
 namespace streaming
 {
@@ -22,6 +28,9 @@ namespace streaming
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<Context>(options =>
+                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddMvc();
         }
 
@@ -47,6 +56,11 @@ namespace streaming
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
+                    name: "login",
+                    template: "api/login",
+                    defaults: new { controller = "Account", action = "LogIn" });
+
+                routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
 
@@ -54,6 +68,9 @@ namespace streaming
                     name: "spa-fallback",
                     defaults: new { controller = "Home", action = "Index" });
             });
+
+            //app.UseIdentity()
+            //    .UseJwtBearerAuthentication(authConfig);
         }
     }
 }
