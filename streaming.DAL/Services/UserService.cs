@@ -19,14 +19,20 @@ namespace streaming.DAL.Services
         public bool Register(string email, string password)
         {
             string hashedPassword = SecurityManager.Encrypt(password, true);
-            _context.Users.AddAsync(new UserDTO() { UserEmail = email, Password = password });
+            _context.Users.Add(new UserDTO() { UserEmail = email, Password = hashedPassword });
+            _context.SaveChanges();
 
             return true;
         }
 
-        public bool LogIn()
+        public bool LogIn(string email, string password)
         {
 
+            return true;
+        }
+
+        private bool isUserExists(string email)
+        {
             return true;
         }
     }
